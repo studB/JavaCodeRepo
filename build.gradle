@@ -9,9 +9,33 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    implementation {
+        canBeResolved(true)
+    }
+}
+
 dependencies {
+
+    /** Parquet Test */
+    implementation 'org.apache.parquet:parquet-avro:1.12.2'
+    implementation('org.apache.hadoop:hadoop-common:3.3.4') {
+        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+    }
+    implementation('org.apache.hadoop:hadoop-mapreduce-client-core:3.3.4') {
+        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+    }
+    /***/
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+tasks.register('list') { /** 옵션 */
+    dependsOn configurations.implementation
+    doLast {
+        println "classpath :\n${configurations.implementation.collect { it.name }.join("\n")}"
+    }
 }
 
 test {
